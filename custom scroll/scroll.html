@@ -1,0 +1,159 @@
+<div class="sliderHolder">
+    <input type="range" min="1" max="100" value="1" class="slider" id="sliderArcher" onmousedown="scrollFunc('sliderArcher', 'interfaceElementArcher', 'interface-allHolderArcher', 100, 'mouse', false)" ontouchstart="scrollFunc('sliderArcher', 'interfaceElementArcher', 'interface-allHolderArcher', 100, 'touch', false)">
+</div>
+
+<style>
+    
+.sliderHolder
+{
+    position: absolute;
+    width: 460px;
+    transform: rotate(90deg);
+    left: 69.9%;
+    top: 51%;
+    z-index: 4; 
+}
+
+.slider
+{
+    display: inline-block; 
+    -webkit-appearance: none; 
+    height: 15px;
+    width: 100%; 
+    background: rgba(0, 0, 0, 0.15); 
+    outline: none;
+    opacity: 0.5; 
+    border-radius: 15px; 
+}
+
+.slider:hover, 
+.slider:active
+{
+    opacity: 1; 
+    transition: opacity 0.3s; 
+}
+
+.slider::-moz-range-track
+{
+    background: none; 
+}
+
+.slider::-webkit-slider-thumb 
+{
+    -webkit-appearance: none; 
+    width: 60px;
+    height: 15px;
+    border-radius: 15px; 
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb 
+{
+    width: 60px;
+    height: 15px;
+    border-radius: 15px;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+.noOverflow
+{
+    overflow: hidden; 
+}
+
+</style>
+
+<script>
+
+function scrollFunc(sliderDiv, idHolder, idTarget, offset, eventType, mouseScrollCall)
+{
+    let scroll = document.getElementById(sliderDiv);  
+    let holder = document.getElementById(idHolder);
+    let target = document.getElementById(idTarget); 
+    
+
+    if (mouseScrollCall === true)
+    {
+        return mouseScroll(idTarget); 
+    }
+
+    let timer = window.setInterval(slider, 10);
+
+    if (eventType === "mouse")
+    {
+        var mouseUpEvent = window.addEventListener("mouseup", clearInt); 
+    }
+    else if (eventType === "touch")
+    {
+        var mouseUpEvent = window.addEventListener("touchend", clearInt);      
+    }
+
+    function clearInt()
+    {
+        clearInterval(timer);
+        if (eventType === "mouse")
+        {
+            mouseUpEvent = window.removeEventListener("mouseup", clearInt); 
+        }
+        else if (eventType === "touch")
+        {
+            mouseUpEvent = window.removeEventListener("touchend", clearInt); 
+        }
+
+    }
+
+    function slider()
+    {
+        let notVisible = target.offsetHeight-holder.offsetHeight+offset;
+
+        if (scroll.value <= 1)
+        {
+            target.style.marginTop = 0;             
+        }
+        else
+        {
+            target.style.marginTop = "-"+notVisible/scroll.max*scroll.value; 
+        }
+    }
+
+    function mouseSlider(scrollType)
+    {
+        let notVisible = target.offsetHeight-holder.offsetHeight+offset;
+
+        if (scrollType === "down")
+        {
+            scroll.value = parseInt(scroll.value) + 10; 
+            target.style.marginTop = "-"+notVisible/scroll.max*scroll.value;       
+        }
+        else if (scrollType === "up")
+        {
+            if (scroll.value <= 2)
+            {
+                target.style.marginTop = "0"; 
+            }
+            else 
+            {
+                scroll.value = parseInt(scroll.value) - 10; 
+                target.style.marginTop = "-"+notVisible/scroll.max*scroll.value;       
+            }
+        }
+    }
+
+    function mouseScroll(idTarget)
+    {
+        document.getElementById(idTarget).addEventListener("wheel", function(e)
+        {
+            if (e.deltaY > 0)
+            {
+                return mouseSlider("down"); 
+            }
+            else if (e.deltaY < 0)
+            {
+                return mouseSlider("up");  
+            }
+        }); 
+    }
+}    
+
+</script>
